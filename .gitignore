@@ -1,4 +1,16 @@
 .DS_Store
+
+fangfei/node_modules/
+fangfei/package-lock.json
+fangfei/dist/
+fangfei/npm-debug.log*
+fangfei/yarn-debug.log*
+fangfei/yarn-error.log*
+fangfei/test/unit/coverage/
+fangfei/test/e2e/reports/
+
+
+
 node_modules/
 /dist/
 npm-debug.log*
