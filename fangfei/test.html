@@ -1,0 +1,109 @@
+<!-- 存储服务 -->
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.2.0/dist/av-min.js"></script>
+<!--  
+
+<script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.2.0/dist/av-live-query-min.js"></script>
+
+-->
+// 存储服务
+<script>
+  var {
+    Query,
+    User
+  } = AV;
+  AV.init({
+    appId: "eTaQG9l8RSbLiknOykqBRck0-gzGzoHsz",
+    appKey: "w02mIgOOh6NN29zjeLE809a8",
+    serverURLs: "https://etaqg9l8.lc-cn-n1-shared.com",
+  });
+  console.log(AV)
+
+  /*
+  写一些api
+  https://leancloud.cn/docs/sdk_setup-js.html
+  https://leancloud.cn/docs/leanstorage_guide-js.html
+
+  业务统一的函数 
+  
+  查询
+  增加
+  删除
+  更改
+
+  todo={
+     title :"", 
+     content :"",
+     callTime:"",
+  }
+
+  */
+  UI = {
+    init() {
+      var ret = console.log(1)
+      console.log(ret)
+      return ret;
+    },
+    async test() {
+      // this.signIn({ name:"wz", password:"wz", })
+
+     /// this.createObj('Todo', {  title: "wz",  content: "wz",  })
+
+      // this.updateObj('Todo', '5e3783e27796d90078b3fcb3', {  title: 'wzzx' })
+      var ret = this.search('Todo').then(function (data) {
+        console.log(data, 666, "UI do thing")
+      })
+
+      // this.delObj('Todo', '5e3783e27796d90078b3fcb3')
+      ret =await this.search2('Todo')
+      console.log(ret, )
+    },
+    async search2(name) {
+      var query = new AV.Query(name); 
+      return new Promise(function (resolve, reject) {
+        query.find().then(function (data) { 
+          resolve(data);  
+        })
+      });
+    },
+    /* 用户相关 */
+    signIn(user) {
+      var obj = new AV.User();
+      obj.setUsername(user.name);
+      obj.setPassword(user.password);
+      return obj.signUp();
+    },
+    signUp(user) {
+      return AV.User.logIn(user.name, user.password)
+    },
+    /* 统一封装的函数共用 */
+    createObj(name, data) {
+      var Obj = AV.Object.extend(name);
+      var obj = new Obj();
+      for (var key in data) {
+        obj.set(key, data[key]);
+      }
+      return obj.save();
+    },
+    updateObj(name, id, data) {
+      var obj = AV.Object.createWithoutData(name, id);
+      for (var key in data) {
+        obj.set(key, data[key]);
+      }
+      return obj.save();
+    },
+
+    search(name) {
+      var query = new AV.Query(name);
+      return query.find();
+    },
+    delObj(name, id) {
+      var obj = AV.Object.createWithoutData(name, id);
+      return obj.destroy();
+    },
+
+  }
+
+
+  UI.test()
+
+</script>
