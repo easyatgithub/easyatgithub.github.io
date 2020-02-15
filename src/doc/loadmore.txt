@@ -1,0 +1,102 @@
+<template>
+  <div style="height:100vh;overflow: scroll;">
+    <mt-loadmore
+      :top-method="loadTop"
+      @top-status-change="handleTopChange"
+      :bottom-method="loadBottom"
+      @bottom-status-change="handleBottomChange"
+      ref="loadmore"
+    >
+      <div v-for="item in list">
+        {{ item }}
+        <mt-button
+          type="primary"
+          @click="loadTop"
+        >编辑</mt-button>
+        <mt-button
+          type="primary"
+          @click="loadTop"
+        >查看</mt-button>
+      </div>
+    </mt-loadmore>
+  </div>
+</template>
+
+<script>
+/*
+这个页面来写 历史期号与竞猜
+{
+  id date code result
+}
+*/
+import { Toast } from "mint-ui"
+import { api } from "@/api/index.js"
+export default {
+  data() {
+    return {
+      allLoaded: false,
+      list: [
+        {
+          username: "itcast",
+          password: "666"
+        },
+        {
+          username: "itcast",
+          password: "666"
+        },
+        {
+          username: "itcast",
+          password: "666"
+        },
+        {
+          username: "itcast",
+          password: "666"
+        },
+        {
+          username: "itcast",
+          password: "777"
+        }
+      ]
+    }
+  },
+  mounted() {
+    this.$store.state.title = "登录"
+  },
+  created() {
+    if (this.$store.state.footerVisible) {
+      this.$store.commit("TOGGLE_FOOTER")
+    }
+  },
+  methods: {
+    loadTop() {
+      console.log("loadTop")
+    },
+    // 下拉状态改变时，
+    handleBottomChange(status) {
+      console.log("handleBottomChange", this.list)
+    },
+    // 上拉状态改变时
+    handleTopChange(status) {
+      console.log("handleTopChange")
+    },
+    // 下拉刷新，触发的方法
+    loadTop() {
+      console.log("loadTop")
+    },
+    // 上拉加载，触发的方法
+    loadBottom() {
+      console.log("loadBottom")
+    },
+    loadBottom() {
+      console.log("loadBottom")
+      this.list = this.list.concat(this.list)
+      this.$toast({
+        message: "没有更多啦~",
+        position: "bottom",
+        duration: 3000
+      })
+    }
+  }
+}
+</script>
+

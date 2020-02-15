@@ -1,0 +1,111 @@
+<template>
+  <div class="app">
+    随机一下:
+    <input type="button" value="toggle" v-on:click="toggle()" /> <br />
+    <mt-picker
+      :visibleItemCount="1"
+      :slots="slots"
+      @change="onValuesChange"
+    ></mt-picker>
+    <div v-for="item in list">
+      {{ item }}
+    </div>
+    编辑: 1,2,3,4,5<br />
+    历史 1233455<br />
+  </div>
+</template>
+
+<script>
+/*
+ const test = resolve => require(["@/pages/test"], resolve);
+
+  { path: "/", component: test},
+
+ import VueDataLoading from "vue-data-loading";
+
+*/
+
+export default {
+  name: "app",
+  components: {},
+  data() {
+    return {
+      systemArr: [],
+      slots: [],
+      list: [1, 2, 3],
+      loading: false,
+      completed: false,
+      page: 1
+    };
+  },
+  methods: {
+    toggle: function() {
+      this.initSolt();
+    },
+    system: function() {
+      var arr = [];
+      for (var i = 0; i < 33; i++) {
+        arr[i] = i + 1;
+      }
+      var x = [];
+      while (x.length < 6) {
+        var index = -~(Math.random() * arr.length);
+        if (arr[index]) {
+          x.push(arr[index]);
+          delete arr[index];
+        }
+      }
+      x.push(-~(Math.random() * 16));
+      return x;
+    },
+    onValuesChange(picker, values) {
+      console.log(picker, values);
+    },
+    initSolt() {
+      var arr = [];
+      var slots = [];
+      var system = (this.systemArr = this.system());
+      for (var i = 1; i <= 33; i++) {
+        arr.push(i);
+      }
+
+      slots.push({ divider: true, content: "红球", className: "slot" });
+      for (var i = 0; i <= 5; i++) {
+        slots.push({
+          flex: 1,
+          values: arr,
+          defaultIndex: system[i],
+          className: "slot" + i
+        });
+      }
+      slots.push({ divider: true, content: "篮球", className: "slot" });
+      slots.push({
+        flex: 1,
+        values: arr,
+        defaultIndex: -~(Math.random() * 17),
+        className: "slot-blue"
+      });
+      this.slots = slots;
+    }
+  },
+  created() {
+    this.initSolt();
+    if (this.$store.state.footerVisible) {
+      this.$store.commit("TOGGLE_FOOTER");
+    }
+  }
+};
+</script>
+
+<style>
+.app {
+  max-width: 400px;
+  margin: 0 auto;
+  text-align: center;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+</style>

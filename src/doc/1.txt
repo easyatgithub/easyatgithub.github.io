@@ -1,0 +1,31 @@
+【协议勾选】
+
+radioVal: ["我同意《会员服务协议》"]
+<mt-checklist v-model="radioVal" :options="['我同意《会员服务协议》']" style="float: left"></mt-checklist>
+if (!this.radioVal.length) {
+        this.$toast({
+          message: "请同意《会员服务协议》",
+          position: "top",
+          duration: 2000
+        })
+        return false
+      }
+
+<div class="red ball">11</div>
+<div class="blue ball">11</div>
+<style>
+   .ball{
+    color: white;
+    border-radius:15px;
+    width: 20px;
+    height: 20px;
+    text-align:center;
+    line-height:20px;
+  }
+ .red{
+   background-color:red;
+  }
+ .blue{
+   background-color:blue;
+  }
+  </style>
