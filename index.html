@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
+	<title>简单的记事本</title>
     <link
       rel="stylesheet"
       href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
@@ -177,6 +178,8 @@
           visible: false
         };
       },
+	  mounted() {
+	  },
       methods: {
         addTextarea() {
           this.list.push({
@@ -197,9 +200,10 @@ if (!pattern.test(this.tableName)){
 		  return;
 }
  
-		  
+		  this.getList(this.tableName)
 		  localStorage.setItem('tableName', this.tableName);
 		  this.dialogVisible=false
+		  
 		},
         save() {
           var _this = this;
