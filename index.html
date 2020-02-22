@@ -1,125 +1,268 @@
-﻿ 
- 
-   
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <!-- import CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-  
-  <script src="https://cdn.bootcss.com/clipboard.js/2.0.4/clipboard.min.js"></script>
-    
-   <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=t5V65uI4OHHELDWqTbQXucWA&services=&t=20200103103842&s=1"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.2.0/dist/av-min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
     <style>
-	 #map{
-	  width :100%;
-	  height:600px;
-	 }
-	  .map{
-	  width :300px;
-	  height:200px;
-	 }
-	</style>
-</head>
-<body>
-  <div id="app">
-  <el-tabs v-model="activeName" @tab-click="handleClick">
-    <el-tab-pane label="地图" name="first">
-	地图  <div id="map" >   </div> 
-	</el-tab-pane>
-    <el-tab-pane label="项目" name="second">项目
-	<table>
-	 <tr><td><div class = "map" id="map0" >   </div></td><td>{{data[0].desc}}</td> </tr>
-     <tr><td><div class = "map" id="map1" >   </div></td><td>{{data[1].desc}}</td> </tr>
-	 <tr><td><div class = "map" id="map2" >   </div></td><td>{{data[2].desc}}</td> </tr>
-	 <tr><td><div class = "map" id="map3" >   </div></td><td>{{data[3].desc}}</td> </tr>
-	 <tr><td><div class = "map" id="map4" >   </div></td><td>{{data[4].desc}}</td> </tr>
-	 <tr><td><div class = "map" id="map5" >   </div></td><td>{{data[5].desc}}</td> </tr>
- </table>
-	
-	</el-tab-pane> 
-  </el-tabs>
-  
-<!-- doc-->
+      .resize {
+        resize: both;
+        width: 45%;
+      }
+      .itemDiv {
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+	<el-dialog
+  title="给本本起个名字"
+  :visible.sync="dialogVisible"
+  width="30%"
+  >
+  <span>
+  <el-input v-model="tableName" placeholder="请输入内容"></el-input>
+  </span>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary" @click="saveTableName">确 定</el-button>
+  </span>
+</el-dialog>
 
- 
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="记事本" name="first">
+		  <el-button type="success" plain @click="clearLocal">清除缓存</el-button>
+          <el-button type="primary" plain @click="save">保存</el-button>
+          <el-button type="success" plain @click="addTextarea">新增</el-button>
+		  <br />
+          <div class="itemDiv" v-for="(item, index) in list" :key="index">
+            <textarea
+              class="resize"
+              type="textarea"
+              :rows="7"
+              v-model="item.str"
+              @click="test(item)"
+            ></textarea>
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="管理" name="second">
+          <el-table :data="list" style="width: 100%" height="700">
+            <el-table-column fixed prop="id" label="ID" width="250">
+            </el-table-column>
+            <el-table-column prop="str" label="内容" width="500">
+            </el-table-column>
 
-<!-- doc-->
-    <el-button @click="visible = true">说明</el-button>
-    <el-dialog :visible.sync="visible" title=" 内容">
-      <p>内容仅供参考,微信: 
-	  	  <input id="foo" value="wzskyline"> <button class="btn" data-clipboard-target="#foo">  点击复制微信</button>
-		  <input id="foo2" value="https://easyatgithub.github.io"> <button class="btn" data-clipboard-target="#foo2">  点击复制链接</button>
-	  </p>
-    </el-dialog>
-  </div>
-</body>
-  <!-- import Vue before Element -->
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
-  <!-- import JavaScript -->
-  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.$index, scope.row)"
+                  >删除</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+
+         
+      </el-tabs>
+    </div>
+  </body>
+
   <script>
-      /*
-	   
-      */
+    var { Query, User } = AV;
+    AV.init({
+      appId: "eTaQG9l8RSbLiknOykqBRck0-gzGzoHsz",
+      appKey: "w02mIgOOh6NN29zjeLE809a8",
+      serverURLs: "https://etaqg9l8.lc-cn-n1-shared.com"
+    });
+
+    UI = {
+      init() {
+        var ret = console.log(1);
+        console.log(ret);
+        return ret;
+      },
+
+      async search2(name) {
+        var query = new AV.Query(name);
+        return new Promise(function(resolve, reject) {
+          query.find().then(function(data) {
+            resolve(data);
+          });
+        });
+      },
+      /* 用户相关 */
+      signIn(user) {
+        var obj = new AV.User();
+        obj.setUsername(user.name);
+        obj.setPassword(user.password);
+        return obj.signUp();
+      },
+      signUp(user) {
+        return AV.User.logIn(user.name, user.password);
+      },
+      /* 统一封装的函数共用 */
+      createObj(name, data) {
+        var Obj = AV.Object.extend(name);
+        var obj = new Obj();
+        for (var key in data) {
+          obj.set(key, data[key]);
+        }
+        return obj.save();
+      },
+      updateObj(name, id, data) {
+        var obj = AV.Object.createWithoutData(name, id);
+        for (var key in data) {
+          obj.set(key, data[key]);
+        }
+        return obj.save();
+      },
+
+      search(name, skip, limit) {
+        skip = skip || 0;
+        limit = limit || 100;
+        var query = new AV.Query(name);
+        query.skip(skip); // 第一次跳过0 个 第二次跳过10个  (i -1) *10
+        query.limit(limit); // 默认值100
+        return query.find();
+      },
+      delObj(name, id) {
+        var obj = AV.Object.createWithoutData(name, id);
+        return obj.destroy();
+      },
+      async findByCondition(table, col, value) {
+        try {
+          let query = new AV.Query(table);
+          query.equalTo(col, value);
+          return new Promise(function(resolve, reject) {
+            query.find().then(function(data) {
+              resolve(data);
+            });
+          });
+
+          return list;
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    /*
+     本页面逻辑
+    */
     new Vue({
-      el: '#app',
+      el: "#app",
       data: function() {
-        return {  
-            data :[
-			{ x:109.04591, y:34.366866,desc:"【1.华南城】 30W/ 80平复式 /东北 三环 三号线 /新寺遗址公园 "},
-			{ x:109.002738,y:34.315718,desc:"【2.辛家庙】 30W/ 60-90平 / 城东 二环 三号线/大明宫遗址公园  "},
-			{ x:108.860994,y:34.288529,desc:"【3.美美景园】 30W/ 80 / 城西 三环 一号线 /汉城湖"},
-			{ x:108.923696,y:34.198078,desc:"【4.万象春天】 30W/ 80 / 城南 三环 2号线/永阳公园 会展中心 "},
-			{ x:108.847082,y:34.480398,desc:"【5.恒大旅游城】 30W/ 80 / 城北 秦汉新城 "},
-			{ x:109.028193,y:34.453810,desc:"【6.当代惠儿满堂悦】 30W/ 80 /城北 渭河  "},
-{ x:109.030024,y:34.450462,desc:"【7.   当代上品"},
-{ x:108.92564,y:34.478692,desc:"【8.  乐华城 "},
-{ x:108.845835,y:34.285178,desc:"【9.  海棠湾X "},
-{ x:109.028193,y:34.453810,desc:"【7.   "},
-{ x:109.028193,y:34.453810,desc:"【8.   "},
-{ x:109.028193,y:34.453810,desc:"【9.   "},
-			 
-			],
-               activeName: 'second',
-            visible: false }
+        return {
+          activeName: "first",
+          item: {
+            id: "",
+            uid: 0,
+            username: "",
+            str: ""
+          },
+          oldList: [],
+          list: [],
+		  tableName:null,
+		  dialogVisible: true,
+          visible: false
+        };
       },
       methods: {
-	  handleClick(){
-	  },
-    allItem(tab, event) {
-      console.log(this.data);
-      for(var i=0;i<this.data.length;i++){
-	  var map = new BMap.Map('map'+i,{enableMapClick:true}); 
-	  map.centerAndZoom(new BMap.Point(this.data[i].x,this.data[i].y), 15);  // 初始化地图,设置中心点坐标和地图级别
-      map.enableScrollWheelZoom(true);
-	  
-	  } 
-    },
-	clipboard (){
-	var clipboard = new ClipboardJS('.btn');  
+        addTextarea() {
+          this.list.push({
+            id: "",
+            uid: 0,
+            username: "admin",
+            str: ""
+          });
+        },
+		clearLocal(){
+		  localStorage.removeItem('tableName');
+		  location.reload()
+		},
+		saveTableName(){
+		  var pattern = /^[A-Za-z]+$/gi;
+if (!pattern.test(this.tableName)){
+          this.$message("仅支持全英文名");
+		  return;
+}
  
-	}
-    
-  },
-  mounted() {
-     var map = new BMap.Map('map',{enableMapClick:true});    // 创建Map实例
-      //http://api.map.baidu.com/lbsapi/getpoint/index.html
-	  map.centerAndZoom(new BMap.Point(108.953938,34.275929), 13);  // 初始化地图,设置中心点坐标和地图级别
+		  
+		  localStorage.setItem('tableName', this.tableName);
+		  this.dialogVisible=false
+		},
+        save() {
+          var _this = this;
+          var a = this.oldList;
+          var b = this.list;
+          var tmp = [];
+		  
+		  if(!this.tableName ){
+		  this.dialogVisible=true;
+		   return;
+		  }
+          for (var i = 0; i < a.length; i++) {
+            if (a[i].str && b[i].str && a[i].str != b[i].str) {
+              tmp.push(b[i]);
+            }
+          }
+          tmp = tmp.concat(b.slice(a.length, b.length));
+          for (var i = 0; i < tmp.length; i++) {
+            if (tmp[i].id != "") {//update
+              UI.updateObj(this.tableName, tmp[i].id, tmp[i]);
+            } else { 
+              UI.createObj(this.tableName, tmp[i]);
+            }
+          }
 
-      //添加地图类型控件
-      map.addControl(new BMap.MapTypeControl({
-        mapTypes:[
-          BMAP_NORMAL_MAP,
-          BMAP_HYBRID_MAP
-        ]}));
-      map.setCurrentCity("西安");          // 设置地图显示的城市 此项是必须设置的
-      map.enableScrollWheelZoom(true);
-       this.allItem()
-	      this.clipboard()
-    }
-	
-    })
+          this.$message("成功保存");
+        },
+        test(item) {},
+
+        handleDelete(index, row) {
+          UI.delObj(this.tableName, row.id).then(function(data) {});
+          this.list.splice(index, 1);
+        },
+		getList(tableName){
+		var _this = this;
+		UI.search(tableName).then(function(data) {
+          console.log(data);
+          for (var i = 0; i < data.length; i++) {
+            _this.list.push({
+              id: data[i].id,
+              uid: data[i].attributes.uid,
+              username: data[i].attributes.username,
+              str: data[i].attributes.str
+            });
+          }
+          _this.oldList = JSON.parse(JSON.stringify(_this.list));
+		  });
+		}
+      },
+
+      mounted() {
+        var _this = this;
+		
+		var tableName = localStorage.getItem('tableName');
+		console.log("tableName",tableName)
+		if(tableName &&tableName.length>0){
+		  this.tableName=tableName
+		  this.dialogVisible=false
+		  this.getList(tableName)
+        
+		}
+        
+      }
+    });
   </script>
 </html>
