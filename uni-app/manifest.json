@@ -1,7 +1,7 @@
 {
-    "name" : "图片App模版",
+    "name" : "轻应用-简易记录",
     "appid" : "",
-    "description" : "图片App模版",
+    "description" : "轻应用-简易记录",
     "transformPx" : false,
     "icons" : [
         {
@@ -37,7 +37,7 @@
         "template" : "template.h5.html",
         "router" : {
             "mode" : "hash",
-            "base" : "/demo/picture/website/"
+            "base" : "/"
         },
         "domain" : "com.wzskyline"
     }

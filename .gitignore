@@ -1,5 +1,8 @@
 .DS_Store
 
+
+uni-app/unpackage 
+
 fangfei/node_modules/
 fangfei/package-lock.json
 fangfei/dist/
