@@ -1,11 +1,11 @@
-import { data } from "@/api/data.js";
+import { data } from "./data.js";
 export const dev = {
   login() {
     console.log(data);
     return new Promise(function(resolve, reject) {
-      // resolve({ success: true });
+      //resolve({ success: true });
       // setTimeout(resolve, 100, { success: true });
-      resolve(data);
+      resolve(data.login);
     });
   },
   getMyInfo() {
@@ -18,17 +18,17 @@ export const dev = {
       resolve(data.recentUsers);
     });
   },
-  getStorys() {
+  getMyLinks( ) {
     return new Promise(function(resolve, reject) {
-      var arr = data.storyList;
-      var tmp = arr.concat(arr, arr, arr, arr, arr);
-      resolve(tmp);
+      resolve({
+		  shared:data.linkList,
+		  collected:data.linkList
+	  });
     });
   },
-
-  ssqList() {
+  getLinkList(page) {
     return new Promise(function(resolve, reject) {
-      resolve(data.ssqList);
+      resolve(data.linkList);
     });
   }
 };

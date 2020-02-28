@@ -2,121 +2,91 @@
   <div>
     列表区域
     <div class="list">
-      <div class="line">
-        <div class="user">user</div>
-        <div class="userRight">
-          <div class="rightTitle">wechat</div>
-          <div class="rightTitle">
-            <a :href="goToHref()" target="_blank">wechat</a>
+      <waterfall
+        :col="2"
+        :width="itemWidth"
+        :gutterWidth="gutterWidth"
+        :data="data"
+        @loadmore="loadmore"
+        @scroll="scroll"
+      >
+        <template>
+          <div
+            class="cell-item"
+            v-for="(item, index) in data"
+          >
+            <img
+              v-if="item.img"
+              :src="item.img"
+              alt="加载错误"
+            />
+            <div class="item-body">
+              {{ item.title }}
+              <div class="item-footer">
+                <div class="name">{{ item.user }}</div>
+              </div>
+            </div>
           </div>
-          <div class="rightDesc" @click="shoWPop">
-            1
-          </div>
-        </div>
-      </div>
-
-      <div class="line">
-        <div class="user">user</div>
-        <div class="userRight">
-          <div class="rightTitle">wechat</div>
-          <div class="rightTitle">
-            <a href="http://qq.com" target="_blank">wechat</a>
-          </div>
-          <div class="rightDesc">
-            DCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCESCS
-          </div>
-        </div>
-      </div>
+        </template>
+      </waterfall>
     </div>
-
-    单独区域
-    <mt-popup
-      v-model="showPop"
-      position="bottom"
-      popup-transition="popup-fade"
-      closeOnClickModal="true"
-    >
-      <div class="pin">
-        <div class="pincontent">
-          <input
-            type="button"
-            style="float:right"
-            value="关闭"
-            v-on:click="closePop"
-          />
-          <mt-field
-            label="相关介绍"
-            placeholder="请输入自我介绍(100字以内)"
-            v-model="item.desc"
-            type="textarea"
-            rows="8"
-          ></mt-field>
-        </div>
-      </div>
-    </mt-popup>
   </div>
 </template>
 <style>
-.mint-popup {
-  width: 100%;
-  height: 50%;
-  background-color: #fff;
-}
 .list {
-  display: flex;
-  flex-direction: column;
-}
-.line,
-.user {
-  display: flex;
-  margin: 5px;
-}
-.rightDesc {
-  overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  width: 300px;
+  height: 100px;
 }
 </style>
 
 <script>
-import { api } from "@/api/index.js";
+import { api } from "@/api/index.js"
 export default {
   data() {
     return {
-      list: [1, 2, 3, 4, 5],
-      item: {
-        desc: "1111111111111111"
-      },
-      link: "http://qq.com",
-      showPop: true,
-      clickfalse: true
-    };
+      data: [],
+
+      end: true
+    }
   },
   mounted() {},
+  computed: {
+    itemWidth() {
+      return document.documentElement.clientWidth * 0.44
+    },
+    gutterWidth() {
+      return 9 * 0.5 * (document.documentElement.clientWidth / 375)
+    }
+  },
   watch: {},
   created() {
-    this.getRecentUsers();
+    this.getData()
     if (this.$store.state.footerVisible) {
-      this.$store.commit("TOGGLE_FOOTER");
+      this.$store.commit("TOGGLE_FOOTER")
     }
   },
   methods: {
-    goToHref: function(val) {
-      return "http://baidu.com?goodsId=" + val;
+    loadmore: function() {
+      console.log("AAAAAAAAAAAAAAAAAA")
     },
-    shoWPop() {
-      this.showPop = true;
+    scroll(scrollData) {
+      console.log(scrollData)
     },
-    closePop() {
-      this.showPop = false;
-    },
-    getRecentUsers() {
-      api.getRecentUsers({}).then(res => {
-        console.log("MYINFO", res);
-        this.my = res;
-      });
+    getData() {
+      var arr = [
+        {
+          img:
+            "https://iph.href.lu/100x200?text=%E6%88%91%E4%BB%AC&fg=123456&bg=344546",
+          title: "nice",
+          story: "XXXXXXXXXXXXXXXXXXXXXXX",
+          user: "555"
+        }
+      ]
+      var tmp = arr.concat(arr, arr, arr, arr, arr)
+
+      this.data = tmp
     }
   }
-};
+}
 </script>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <!-- import CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.2.0/dist/av-min.js"></script>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=t5V65uI4OHHELDWqTbQXucWA"></script>
+  <style>
+    
+    .data{
+      display: inline-block;
+      width: 100px;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="app">
+ 
+<el-tabs v-model="activeName">
+  <el-tab-pane label="单项配置"  name="first"> 
+  
+    key:<input type="text" v-model="item.key"/>
+	<a href="https://jsoneditoronline.org/" target="_blank">在线编辑</a>
+	<br>
+    value:<el-input type="textarea" :rows="25" v-model="item.value"></el-input>
+    <input type="button" @click="save" value="保存">
+	
+	
+	<li class="order-intr clearfix" v-for="(item, index) in linkList" :key="index">
+      <a :href="goTO(item.url)" target="_blank">{{item.text}}</a>
+    </li>
+	
+	
+  </el-tab-pane>
+  <el-tab-pane label="所有配置" name="second">
+    项目
+    <el-table
+    :data="tableData"
+    style="width: 100%"
+    height="250">
+  
+    <el-table-column
+      prop="attributes.key"
+      label="key"
+      width="120">
+    </el-table-column>
+    <el-table-column
+      prop="attributes.value"
+      label="value"
+      width="120">
+    </el-table-column>
+    
+     
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button
+          size="mini"
+          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+      </template>
+    </el-table-column>
+  </el-table>
+
+  </el-tab-pane>
+</el-tabs>
+</div>
+</body>
+
+<script>
+
+  var {
+    Query,
+    User
+  } = AV;
+  AV.init({
+    appId: "eTaQG9l8RSbLiknOykqBRck0-gzGzoHsz",
+    appKey: "w02mIgOOh6NN29zjeLE809a8",
+    serverURLs: "https://etaqg9l8.lc-cn-n1-shared.com",
+  });
+ 
+  UI = {
+    init() {
+      var ret = console.log(1)
+      console.log(ret)
+      return ret;
+    },
+    async test() {
+       
+    },
+    async search2(name) {
+      var query = new AV.Query(name);
+      return new Promise(function (resolve, reject) {
+        query.find().then(function (data) {
+          resolve(data);
+        })
+      });
+    },
+    /* 用户相关 */
+    signIn(user) {
+      var obj = new AV.User();
+      obj.setUsername(user.name);
+      obj.setPassword(user.password);
+      return obj.signUp();
+    },
+    signUp(user) {
+      return AV.User.logIn(user.name, user.password)
+    },
+    /* 统一封装的函数共用 */
+    createObj(name, data) {
+      var Obj = AV.Object.extend(name);
+      var obj = new Obj();
+      for (var key in data) {
+        obj.set(key, data[key]);
+      }
+      return obj.save();
+    },
+    updateObj(name, id, data) {
+      var obj = AV.Object.createWithoutData(name, id);
+      for (var key in data) {
+        obj.set(key, data[key]);
+      }
+      return obj.save();
+    },
+
+    search(name,skip,limit) {
+      skip = skip || 0;
+      limit = limit || 100;
+      var query = new AV.Query(name);
+      query.skip(skip); // 第一次跳过0 个 第二次跳过10个  (i -1) *10
+      query.limit(limit); // 默认值100
+      return query.find();
+    },
+    delObj(name, id) {
+      var obj = AV.Object.createWithoutData(name, id);
+      return obj.destroy();
+    },
+
+  }
+
+  var table= "config"
+  /*
+  	   
+   */
+  new Vue({
+    el: '#app',
+    data: function () {
+      return {
+	   
+        activeName: 'first',
+        item:{
+         
+        },
+        isNew:true,
+        id:"",
+        tableData: [   ],
+		linkList: [
+		{url:"https://trello.com/b/ApG4QiQh/domo%E7%9A%84%E9%9D%A2%E6%9D%BF",text:"trello",},
+		{url:"https://trello.com/b/ApG4QiQh/domo%E7%9A%84%E9%9D%A2%E6%9D%BF",text:"trello",},
+		
+		],
+        visible: false
+      }
+    },
+    methods: {
+       
+      save() {
+        if(this.isNew){
+          UI.createObj(table, this.item)
+        }else{
+          UI.updateObj(table,this.id, this.item)
+        }
+      },
+      getList(){
+
+      },
+	  goTO(url){
+	  return url;
+	  },
+      handleEdit(index, row) {
+        console.log(index, row);
+        this.activeName = "first"
+        this.item = row.attributes
+        this.isNew = false;
+        this.id = row.id
+      },
+      handleDelete(index, row) {
+         console.log(index, row, row.id);
+          // UI.delObj(table, row.id).then(function(data) { console.log(data); });
+          // this.tableData.splice(index, 1);
+      }, 
+    },
+    mounted() { 
+       var _this = this
+       UI.search(table).then(function(data){
+        console.log(data)
+        _this .tableData = data
+       })
+    }
+
+  })
+ 
+</script>

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.2.0/dist/av-min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
+    <style>
+      .resize {
+        resize: both;
+        width: 45%;
+      }
+       .code,.check{
+        display: inline;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="记事本" name="first">
+          <el-button type="primary" plain @click="save">保存</el-button>
+          
+          <div class="itemDiv" v-for="(item, index) in list" >
+             <div class="code" @click="chooseLine(item,index)">
+			  {{item }}
+			    
+			 </div>
+			  
+          </div>
+		  <hr>
+		  <div class="itemDiv" v-for="(item, index) in result"  >
+             <div class="code">
+			  {{item }}
+			    
+			 </div>
+			  
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="管理" name="second">
+          <el-table :data="list" style="width: 100%" height="700">
+            <el-table-column fixed prop="id" label="ID" width="250">
+            </el-table-column>
+            <el-table-column prop="str" label="内容" width="500">
+            </el-table-column>
+
+            <el-table-column label="操作">
+              <template slot-scope="scope">
+                <el-button
+                  size="mini"
+                  type="danger"
+                  @click="handleDelete(scope.$index, scope.row)"
+                  >删除</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+        </el-tab-pane>
+
+        <el-tab-pane label="技术说明" name="third">
+          <br />表名不能是_开头 <br />字段名初始化类型与后期更改类型一致
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </body>
+
+  <script>
+  var string = `
+2020009 2020-01-21(二)	030608141926	12	405,733,380	16	6003258	253	79308	3295	3000	645107708	
+2020008	2020-01-19(日)	010406101128	16	395,048,088	17	6202629	262	97541	1890	3000	680964320	
+2020007	2020-01-16(四)	051217202531	10	358,035,962	38	5371408	269	65583	2413	3000	709741377	
+2020006	2020-01-14(二)	030405101632	09	361,697,316	20	5735328	363	50642	2293	3000	860929224	
+2020005	2020-01-12(日)	111617222632	04	400,642,476	8	7446888	224	109236	1925	3000	920486146	
+2020004	2020-01-09(四)	021517273233	03	370,826,158	7	7900679	189	134290	2010	3000	906654598	
+2020003	2020-01-07(二)	091726293032	03	368,960,938	16	6237758	134	184740	1708	3000	885816521	
+2020002	2020-01-05(日)	040914151629	11	410,784,878	16	6188650	194	122541	2193	3000	911355134	
+2020001	2020-01-02(四)	021523262930	02	388,311,860	4	10000000	113	275836	1002	3000	939054504	
+2019151	2019-12-31(二)	020609182426	14	405,999,712	8	8200266	121	264484	1109	3000	885545850	
+2019150	2019-12-29(日)	020914222729	02	424,037,140	9	7571049	158	183065	1906	3000	855139985	
+2019149	2019-12-26(四)	010627283133	07	401,837,358	16	6041786	120	173631	1598	3000	836506504	
+2019148	2019-12-24(二)	091013202627	08	412,835,082	42	5386963	179	113495	2290	3000	870667904	
+2019147	2019-12-22(日)	010912142327	12	428,843,148	10	7003459	120	208693	1629	3000	1035973571	
+2019146	2019-12-19(四)	010410123032	14	400,822,952	4	10000000	82	411505	806	3000	1030878448	
+2019145	2019-12-17(二)	010813171819	16	404,721,396	15	6299971	145	168099	2046	3000	969648184	
+  `
+  var arr = string.split("\n")
+  var list = []
+  for(var i=0;i<arr.length;i++){
+   if(arr[i].trim().length>0){
+     var tmp = arr[i].replace(" ",",").replace("	",",").replace("	",",").replace("	",",").split(",")
+     list.push([
+	  parseInt(tmp[2].substr(0,2)),
+	  parseInt(tmp[2].substr(2,2)),
+	  parseInt(tmp[2].substr(4,2)),
+	  parseInt(tmp[2].substr(6,2)),
+	  parseInt(tmp[2].substr(8,2)),
+	  parseInt(tmp[2].substr(10,2)),
+	  parseInt(tmp[3])
+	 ])
+   }
+  }
+  
+  console.log(list)
+  var ssq ={
+  
+/*
+7 个球 进行比较
+前6个可以是无序的红球 后一位代表篮球
+*/  
+check: function (system, myArr) {
+var x =   system.slice(0,6)
+  var mySix =   myArr.slice(0,6)
+var mySeven = myArr[6]
+var systemSeven = system[6]
+   // 比较前6个有多少个在里面
+var step = 0;
+var redBall=myArr.slice(0,6)
+ for (i in redBall) {
+     for (j in x) {
+       if( parseInt(redBall[i]) == x[j]){
+      step++;
+    break;
+    }
+     }  
+    }
+console.log("step",step)	
+if(step==6){
+ if(mySeven==systemSeven){
+  return "6+1";	 
+ }
+  return "6+0";	 
+}
+if(step==5){
+ if(mySeven==systemSeven){
+  return "5+1";	 
+ }
+  return "5+0";	 
+}
+if(step==4){
+ if(mySeven==systemSeven){
+  return "4+1";	 
+ }
+  return "4+0";	 
+}
+if(step==3){
+ if(mySeven==systemSeven){
+  return "3+1";	 
+ }
+}
+if(step==2){
+ if(mySeven==systemSeven){
+  return "2+1";	 
+  console.log("2+1") 
+ }
+}
+if(step==1){
+ if(mySeven==systemSeven){
+  return "1+1";	 
+  console.log("1+1") 
+ }
+}
+ if(mySeven==systemSeven){
+  console.log("0+1") 
+  return "0+1";	 
+ }
+ return "0+0";	 
+},
+/*
+返回中几等奖的消息
+*/
+result: function (rightArr, myArr) {
+  var msg = {
+    "6+1": { msg:"一等奖     ",amount :6951733 },
+    "6+0": { msg:"二等奖     ",amount : 114911 },
+	"5+1": { msg:"三等奖     ",amount :3000 },
+	"5+0": { msg:"四等奖     ",amount :200 },
+    "4+1": { msg:"四等奖     ",amount :200 },
+	"4+0": { msg:"五等奖     ",amount :10 },
+	"3+1": { msg:"五等奖     ",amount :10 },
+	"2+1": { msg:"六等奖     ",amount :5 },
+	"1+1": { msg:"六等奖     ",amount :5 },
+	"0+1": { msg:"六等奖     ",amount :5 },
+	"0+0": { msg:"遗憾没有中奖",amount :0 },
+  }
+  var kind = this.check(rightArr, myArr);
+  return msg[kind];
+},
+  
+  
+  }
+    
+
+    /*
+     本页面逻辑
+    */
+    new Vue({
+      el: "#app",
+      data: function() {
+        return {
+          activeName: "first",
+          item: {
+            id: "",
+            uid: 0,
+            username: "",
+            str: ""
+          }, 
+          list:  list,
+		  result:[],
+          visible: false
+        };
+      },
+      methods: {
+        chooseLine(item,index) {
+		console.log(item)
+		console.log(this.list[index])
+		this.result=[] 
+		for(var i=index;i<this.list.length;i++){
+		   this.result.push(ssq.result(item,this.list[i]))
+		}
+           
+        },
+
+        save() {
+          
+        },
+        test(item) {},
+
+        handleDelete(index, row) {
+         
+        }
+      },
+
+      mounted() {
+        var _this = this;
+        
+      }
+    });
+  </script>
+</html>

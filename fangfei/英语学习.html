@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/leancloud-storage@4.2.0/dist/av-min.js"></script>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	
+	<link rel="stylesheet" href="https://unpkg.com/swiper/css/swiper.min.css">    
+   <script src="https://unpkg.com/swiper/js/swiper.min.js"> </script>
+
+    <style>
+      .resize {
+        resize: both;
+        width: 45%;
+      }
+       .code,.check{
+        display: inline;
+      } 
+    html, body {
+      position: relative;
+      height: 100%;
+    }
+    body {
+      background: #eee;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color:#000;
+      margin: 0;
+      padding: 0;
+    }
+    .swiper-container {
+      width: 100%;
+      height: 100%;
+    }
+    .swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+
+      /* Center slide text vertically */
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-box-pack: center;
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+      -webkit-box-align: center;
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+    }
+	.content{
+	 width:100%;
+	 height:300px;
+	}
+	.line{
+	 width:100%;
+	 height:100px;
+	}
+	.lineWords{
+	  display:inline;
+	  margin:3px;
+	}
+  </style>
+  </head>
+  <body>
+    <div id="app">
+      <el-tabs v-model="activeName">
+        <el-tab-pane label="首页" name="first">
+		首页滚屏单词
+  <div class="swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">Slide 1</div>
+      <div class="swiper-slide">Slide 2</div>
+      <div class="swiper-slide">Slide 3</div>
+      <div class="swiper-slide">Slide 4</div>
+      <div class="swiper-slide">Slide 5</div>
+      <div class="swiper-slide">Slide 6</div>
+      <div class="swiper-slide">Slide 7</div>
+      <div class="swiper-slide">Slide 8</div>
+      <div class="swiper-slide">Slide 9</div>
+      <div class="swiper-slide">Slide 10</div>
+    </div>
+  </div>
+          <el-button type="primary" plain @click="save">显示翻译</el-button>
+          
+          <div class="itemDiv" v-for="(item, index) in list" >
+             <div class="code" @click="chooseLine(item,index)">
+			  {{item }}
+			    
+			 </div>
+			  
+          </div>
+		  <hr>
+		  <div class="itemDiv" v-for="(item, index) in result"  >
+             <div class="code">
+			  {{item }}
+			    
+			 </div>
+			  
+          </div>
+        </el-tab-pane>
+        <el-tab-pane label="今日推荐" name="second">
+		  <textarea  class="content"  readonly v-model="content"></textarea>
+		  文章
+		  <BR>
+		  <el-button type="primary" plain @click="changeLine">换一句</el-button>
+		  <BR>
+		  <textarea  class="line" readonly v-model="line"></textarea>
+		  <BR>
+		  句子随机
+		   <div class="lineWords" v-for="(item, index) in lineWords" :key="index">
+				<el-button type="primary" plain @click="save">{{item}}</el-button>		  
+		  </div>
+		  <BR>
+		  <el-button type="success" plain @click="save">加入收藏</el-button>
+        </el-tab-pane>
+
+        <el-tab-pane label="管理" name="third">
+		   登陆 
+            
+		   滚屏时间频率
+		   table
+		   新单词录入
+		   https://www.swiper.com.cn/api/index.html
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+  </body>
+
+  <script>  
+  var swiper = new Swiper('.swiper-container');
+  
+  var  s=`
+  Vegetarian Dim Sum House has been a popular place to eat in Manhattan's Chinatown for 23 years. But recently, owner Frankie Chu said he will not be able to pay his rent this month.
+
+Chu said restaurant sales have dropped 70 percent over the last two weeks. On a recent weekday, just three couples stopped in for lunch. Normally, Chu said he gets up to 30 people for lunch. At dinnertime, his narrow restaurant usually gets about 70 customers. These days, he has about four.
+
+"I don't know how long I can stay here," Chu said. "After 9/11, it wasn't this bad."
+
+The situation has concerned New York City officials and business leaders. They have launched a campaign to bring people back to hard-hit communities in Manhattan, Queens and Brooklyn.
+
+"Chinatown is bleeding," said Wellington Chen. He is executive chairman of the Chinatown Partnership, a local business and community group. "This thing is thousands of miles away. This fear is really out of proportion."
+
+New York City is home to more than 500,000 Chinese Americans, the biggest population of any U.S. city. Some New Yorkers whose families are from China say they feel now like foreigners because of a disease spreading in another country.
+
+"It's a little annoying to be honest," said Christina Seid, owner of the Chinatown Ice Cream Factory. Her father started the business 40 years ago.
+
+Her great-grandparents immigrated to New York from China. She said business has been slower than usual but added that the winter months are not busy for ice cream stores. She said she feels hopeful that things will soon return to normal.
+
+There have been no confirmed cases of the virus in New York City. Officials and politicians are trying to prove to locals that there is no reason to avoid any neighborhood. Many city leaders have been eating at Chinese restaurants and publishing pictures of themselves doing so, using the hashtag #SupportChinatown.
+
+In Boston, Massachusetts, Mayor Marty Walsh has launched a similar social media campaign. He has asked people to share pictures of themselves supporting small businesses in that city's Chinatown with the hashtag #LoveBostonChinatown.
+
+In the San Francisco Bay Area, the situation is serious enough that Sunny Wong's family is considering temporarily closing one of the four restaurants they own in Oakland Chinatown. Even some of his friends and longtime customers have told him about false stories of people getting sick at one of his restaurants.
+  `
+
+    /*
+     本页面逻辑
+    */
+    new Vue({
+      el: "#app",
+      data: function() {
+        return {
+          activeName: "first",
+          item: {
+            id: "",
+            uid: 0,
+            username: "",
+            str: ""
+          }, 
+		  content:s,
+		  line:"",
+		  lineWords:  [],
+          list:  [],
+		  result:[],
+          visible: false
+        };
+      },
+      methods: {
+        changeLine() {
+		 this.line= this.content.split(".")[-~(Math.random() *10)]
+		 this.splitLine()
+        },
+		splitLine(){
+		 this.lineWords = this.line.replace(/[a-z]+[\-|\']+[a-z]+/ig, '').match(/([a-z]+)/ig);
+		 this.lineWords = this.lineWords.filter((e)=>{
+		   return e.length>3
+		 })
+		},
+
+        save() {
+          
+        },
+        test(item) {},
+
+        handleDelete(index, row) {
+         
+        }
+      },
+
+      mounted() {
+        var _this = this;
+        
+      }
+    });
+  </script>
+</html>
