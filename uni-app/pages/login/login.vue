@@ -38,11 +38,7 @@
 		},
 		methods: {
 			login(e) {
-				console.log("得到账号:"+ e.detail.value.nameValue + ';得到密码:' + e.detail.value.passwordValue)
-				console.log("前往注册页面",this.user)
-				if(this.nullKey(this.user)) {
-					return;
-				}
+				 
 				api.login({
 					name:  e.detail.value.nameValue,
 					password: e.detail.value.passwordValue
