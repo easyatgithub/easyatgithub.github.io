@@ -3,10 +3,10 @@
 		 
 		 <view class="center-list">
 		 	
-			<text class="list-text"   @click="navito(item.link)">{{item.title}}</text>
-			<text class="list-text"   >{{item.desc}}</text>
-			<text class="list-text"   >{{item.collect}}个收藏</text>
-			<text class="  collect" @click="collect" >{{state}}</text>
+			<text class="title"   @click="navito(item.link)">{{item.title}}</text>
+			<text class="line-desc"   >{{item.desc}}</text>
+			<text class="line-collect"   >{{item.collect}}个收藏</text>
+			<text class="collect" @click="collect" >{{state}}</text>
 		 </view>
 	</view>
 </template>
@@ -92,6 +92,7 @@
 	}
 	.center-list{
 		padding-bottom: 1rem;
+		height: 100%
 	}
 	.collect{
 		margin-left:70% ;
@@ -100,6 +101,17 @@
 		border-radius: 0.5rem;
 		border: 0.1rem solid #DDDDDD;
 		width: 4rem;
+	}
+	.title{
+		padding: 1rem;
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.line-desc{
+		padding: 2rem;
+	}
+	.line-collect{
+		padding: 2rem;
 	}
 	
 </style>
