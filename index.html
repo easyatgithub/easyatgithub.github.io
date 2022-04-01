@@ -3,6 +3,7 @@
           <video id="video" width="640" height="480" autoplay></video>
           <button id="snap" >Snap Photo</button>
           <button id="test" >Snap Photo</button>
+          <button id="test2" > test2() TEST BY INPUT </button>
           <canvas id="canvas" width="640" height="480"></canvas>
     </div>
     <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js"></script>
@@ -33,6 +34,31 @@
                     }, errBack);
                   } 
               }    
+
+              var test2 = function(){
+                try {
+                        console.log("进入>> tryByInput()");
+                        var cur = document.querySelector("#input_upload_ID")
+                        if(cur){
+                        cur.click();  
+                        console.log("点击input 完毕 已有cur ",);
+                        }else{
+                        var  input = document.createElement('input')
+                        input.setAttribute('id', 'input_upload_ID');
+                        input.setAttribute('type', 'file'); 
+                        input.setAttribute('capture', 'camcorder'); 
+                        input.setAttribute('accept', 'video/*');
+                        input.setAttribute("style", 'visibility:hidden'); 
+                        console.log("设置 input 完毕",);
+                        document.body.appendChild(input); 
+                        input.click();
+                        console.log("点击input 完毕",);
+                        }
+                        console.log("初始化 使用 input 点击 ",);
+                    } catch (error) {
+                        console.log("tryByInput() 错误 ",error);
+                    }
+              }
               document.getElementById("snap").addEventListener("click", function() {
                   context.drawImage(video, 0, 0, 640, 480);
               });
@@ -41,20 +67,9 @@
               document.getElementById("test").addEventListener("click", function() {
                   test()
               });
-	  function onPlusReady() {
-              console.log("onPlusReady()",plus)
-	      // 创建扫码控件来调获取手机的相机权限
-	      barcode = plus.barcode.create('barcode', [plus.barcode.QR], {
-		top: '100px', //改为-9999px隐藏该页面
-		left: '0',
-		width: '100%',
-		height: '500px',
-		position: 'static'
-	      });
-	      plus.webview.currentWebview().append(barcode);;
-	      //barcode.start();开始扫码识别（我们把这句代码注释了，因为我们不需要扫描任何东西）
-	  }
-	      document.addEventListener("plusready", onPlusReady, false);
+              document.getElementById("test2").addEventListener("click", function() {
+                  test2()
+              });
         
   </script>
    
