@@ -1,4 +1,14 @@
  
+    <script>
+        var onChange = function(){
+                         console.log("input change 事件 onchange",);
+                            var file = document.getElementById('input_upload_ID').files[0];
+                            console.log("加载的文件 ",file);
+				            var url = URL.createObjectURL(file);
+                            console.log("转化后的url ",url);
+				            document.getElementById("video").src = url; 
+              }
+    </script>
     <div class="welcome">
           <video id="video" width="640" height="480" autoplay></video>
          
@@ -10,6 +20,7 @@
 
     </div>
     <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
       var vConsole = new VConsole();
     </script>
@@ -23,7 +34,15 @@
                   errBack = function(error) { console.log("Video capture error: ", error); };
    
               
-
+              $('body').on('change', 'input[id=input_upload_ID]', function () {   
+                              console.log("input change 事件 onchange",);
+                            var file = document.getElementById('input_upload_ID').files[0];
+                            console.log("加载的文件 ",file);
+				            var url = URL.createObjectURL(file);
+                            console.log("转化后的url ",url);
+				            document.getElementById("video").src = url; 
+              });
+              
               var test2 = function(){
                 try {
                         console.log("进入>> tryByInput()");
@@ -32,30 +51,12 @@
                         cur.click();  
                         console.log("点击input 完毕 已有cur ",);
                         }else{
-                        var  input = document.createElement('input')
-                        input.setAttribute('id', 'input_upload_ID');
-                        input.setAttribute('type', 'file'); 
-                        input.setAttribute('capture', 'camcorder'); 
-                        input.setAttribute('accept', 'video/*');
-                        input.setAttribute("style", 'visibility:hidden'); 
-                         
-                        console.log("设置 input 完毕",);
-                        document.body.appendChild(input); 
+                        var  div = document.getElementById('div')
+                        div.innerHTML = "<input id='input_upload_ID' type='file' capture='camcorder' accept='video/*' style='visibility:hidden' onchange='onChange'/>"
                         var input2 = document.getElementById('input_upload_ID');
-                        console.log("查找input 元素",input2);
-                        input2.addEventListener('onchange', function(){
-                            console.log("input change 事件 onchange",);
-                            var file = document.getElementById('input_upload_ID').files[0];
-                            console.log("加载的文件 ",file);
-				            var url = URL.createObjectURL(file);
-                            console.log("转化后的url ",url);
-				            document.getElementById("video").src = url; 
-                        }, false);
-
-                        input.click();
+                        input2.click();  
                         console.log("点击input 完毕",);
                         }
-                        console.log("初始化 使用 input 点击 ",);
                     } catch (error) {
                         console.log("tryByInput() 错误 ",error);
                     }
