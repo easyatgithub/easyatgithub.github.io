@@ -41,11 +41,14 @@
                          
                         console.log("设置 input 完毕",);
                         document.body.appendChild(input); 
-                        var input = document.getElementById('input_upload_ID');
-                        
-                        input.addEventListener('onchange', function(){
+                        var input2 = document.getElementById('input_upload_ID');
+                        console.log("查找input 元素",input2);
+                        input2.addEventListener('onchange', function(){
+                            console.log("input change 事件 onchange",);
                             var file = document.getElementById('input_upload_ID').files[0];
+                            console.log("加载的文件 ",file);
 				            var url = URL.createObjectURL(file);
+                            console.log("转化后的url ",url);
 				            document.getElementById("video").src = url; 
                         }, false);
 
