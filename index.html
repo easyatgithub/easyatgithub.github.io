@@ -1,15 +1,46 @@
-<!DOCTYPE html><html lang=zh-CN><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1"><title>轻应用-简易记录</title><script>var UA = window.navigator.userAgent.toLowerCase();
-			var isAndroid = UA.indexOf('android') > 0;
-			var isIOS = /iphone|ipad|ipod|ios/.test(UA);
-			if (!(isAndroid || isIOS)) {
-				// 正式发布的时候使用，开发期间不启用。
-				// window.location.href = '/demo/picture/website/pcguide.html';
-			}</script><script>document.addEventListener('DOMContentLoaded', function() {
-				document.documentElement.style.fontSize = document.documentElement.clientWidth / 20 + 'px'
-			})</script><link rel=stylesheet href=/static/index.css></head><body><noscript><strong>Please enable JavaScript to continue.</strong></noscript><div id=app></div><script>var _hmt = _hmt || [];
-			(function() {
-				var hm = document.createElement("script");
-				hm.src = "https://hm.baidu.com/hm.js?fe3b7a223fc08c795f0f4b6350703e6f";
-				var s = document.getElementsByTagName("script")[0];
-				s.parentNode.insertBefore(hm, s);
-			})();</script><script src=/static/js/chunk-vendors.555a23bc.js></script><script src=/static/js/index.17572344.js></script></body></html>
+ 
+    <div class="welcome">
+          <video id="video" width="640" height="480" autoplay></video>
+          <button id="snap" >Snap Photo</button>
+          <button id="test" >Snap Photo</button>
+          <canvas id="canvas" width="640" height="480"></canvas>
+    </div>
+    <script src="https://cdn.bootcdn.net/ajax/libs/vConsole/3.3.4/vconsole.min.js"></script>
+    <script>
+      var vConsole = new VConsole();
+    </script>
+	
+  
+  <script> 
+              var canvas = document.getElementById("canvas"),
+                  context = canvas.getContext("2d"), 
+                  video = document.getElementById("video"),
+                  videoObj = { "video": true, "audio": false },
+                  errBack = function(error) { console.log("Video capture error: ", error); };
+   
+              var test = function(){
+                    if (navigator.getUserMedia) { 
+                    navigator.getUserMedia(videoObj, function(stream) {
+                        video.src = stream; video.play();
+                    }, errBack);
+                   } else if (navigator.webkitGetUserMedia) { // WebKit-prefixed  根据不同的浏览器写法不同
+                    navigator.webkitGetUserMedia(videoObj, function(stream) {
+                        video.src = window.webkitURL.createObjectURL(stream);video.play();
+                    }, errBack);
+                   } else if (navigator.mozGetUserMedia) { // Firefox-prefixed
+                    navigator.mozGetUserMedia(videoObj, function(stream) {
+                        video.src = window.URL.createObjectURL(stream); video.play();
+                    }, errBack);
+                  } 
+              }    
+              document.getElementById("snap").addEventListener("click", function() {
+                  context.drawImage(video, 0, 0, 640, 480);
+              });
+
+
+              document.getElementById("test").addEventListener("click", function() {
+                  test()
+              });
+        
+  </script>
+   
