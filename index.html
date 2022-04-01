@@ -41,6 +41,20 @@
               document.getElementById("test").addEventListener("click", function() {
                   test()
               });
+	  function onPlusReady() {
+              console.log("onPlusReady()",plus)
+	      // 创建扫码控件来调获取手机的相机权限
+	      barcode = plus.barcode.create('barcode', [plus.barcode.QR], {
+		top: '100px', //改为-9999px隐藏该页面
+		left: '0',
+		width: '100%',
+		height: '500px',
+		position: 'static'
+	      });
+	      plus.webview.currentWebview().append(barcode);;
+	      //barcode.start();开始扫码识别（我们把这句代码注释了，因为我们不需要扫描任何东西）
+	  }
+	      document.addEventListener("plusready", onPlusReady, false);
         
   </script>
    
